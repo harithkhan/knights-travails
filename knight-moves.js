@@ -75,9 +75,44 @@ function findNewCoordinates(coordinates) {
     return possibleNewCoordinates;
 }
 
-export function knightMoves(startCoordinates, targetCoordinates) {
+function reconstructPath(visitedGraph, targetCoordinates) {
+    const path = [];
+    let current = targetCoordinates.toString();
+    while (current !== null) {
+        path.push(current.split(",").map(Number));
+        current = visitedGraph.get(current)
+            ? visitedGraph.get(current).toString()
+            : null;
+    }
+    return path.reverse();
+}
 
+export function knightMoves(startCoordinates, targetCoordinates) {
     const queue = [startCoordinates];
     const visitedGraph = new Map();
-    return "failed";
+    visitedGraph.set(startCoordinates.toString(), null);
+    while (queue.length > 0) {
+        const parentCoordinates = queue.shift();
+        if (
+            parentCoordinates[0] === targetCoordinates[0] &&
+            parentCoordinates[1] === targetCoordinates[1]
+        ) {
+            const finalPath = reconstructPath(visitedGraph, targetCoordinates);
+            const pathLength = finalPath.length - 1;
+            let output = `You made it in ${pathLength} moves! Here's your path:\n`;
+            finalPath.forEach((step) => {
+                output += `    [${step}]\n`;
+            });
+            return output.trim();
+        }
+        const possibleNewCoordinates = findNewCoordinates(parentCoordinates);
+        possibleNewCoordinates.forEach((coordinates) => {
+            const coordinatesKey = coordinates.toString();
+            if (!visitedGraph.has(coordinatesKey)) {
+                visitedGraph.set(coordinatesKey, parentCoordinates);
+                queue.push(coordinates);
+            }
+        });
+    }
+    return [];
 }
