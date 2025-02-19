@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "commit": "git add . && git commit"
   },
   "repository": {
     "type": "git",
